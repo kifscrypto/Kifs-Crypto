@@ -1,5 +1,6 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
+import RunMigrationButton from '@/components/run-migration-button'
 
 export const metadata: Metadata = {
   title: 'Admin Dashboard - KIFS Crypto',
@@ -51,6 +52,9 @@ export default function AdminDashboardPage() {
           </div>
         </Link>
       </div>
+
+      {/* DB Migration */}
+      <RunMigrationButton />
 
       {/* Instructions */}
       <div className="bg-[#FFA500]/10 border border-[#FFA500]/30 rounded-lg p-6 space-y-4">
