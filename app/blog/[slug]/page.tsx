@@ -29,23 +29,22 @@ export async function generateMetadata(
     }
   }
 
+  const ogImage = post.balance != null
+    ? `https://kifscrypto.com/api/og?title=${encodeURIComponent(post.title)}&balance=${encodeURIComponent(`$${parseFloat(String(post.balance)).toFixed(2)}`)}&week=${post.week ?? ''}`
+    : `https://kifscrypto.com/api/og?title=${encodeURIComponent(post.title)}`
+
   return {
     title: `${post.meta_title || post.title} - KIFS Crypto`,
     description: post.meta_description || post.excerpt,
-    canonical: `https://kifscrypto.com/blog/${post.slug}`,
+    alternates: {
+      canonical: `https://kifscrypto.com/blog/${post.slug}`,
+    },
     openGraph: {
       title: post.meta_title || post.title,
       description: post.meta_description || post.excerpt,
       type: 'article',
       url: `https://kifscrypto.com/blog/${post.slug}`,
-      images: [
-        {
-          url: `https://kifscrypto.com/api/og?title=${encodeURIComponent(post.title)}&balance=${encodeURIComponent(`$${parseFloat(post.balance).toFixed(2)}`)}&week=${post.week}`,
-          width: 1200,
-          height: 630,
-          alt: post.title,
-        },
-      ],
+      images: [{ url: ogImage, width: 1200, height: 630, alt: post.title }],
       publishedTime: post.date,
       authors: ['KIFS Crypto'],
     },
@@ -53,9 +52,7 @@ export async function generateMetadata(
       card: 'summary_large_image',
       title: post.meta_title || post.title,
       description: post.meta_description || post.excerpt,
-      images: [
-        `https://kifscrypto.com/api/og?title=${encodeURIComponent(post.title)}&balance=${encodeURIComponent(`$${parseFloat(post.balance).toFixed(2)}`)}&week=${post.week}`,
-      ],
+      images: [ogImage],
     },
   }
 }
@@ -72,11 +69,15 @@ export async function generateStaticParams() {
   }))
 }
 
-// Exchange URL mapping
+// Exchange URL mapping — bonus = direct referral link, review = Trading365 review
 const EXCHANGE_URLS: Record<string, { bonus: string; review: string }> = {
   'BYDFi': {
     bonus: 'https://partner.bydfi.com/register?vipCode=KifsCrypto',
     review: 'https://www.trading365.org/reviews/bydfi-review',
+  },
+  'MEXC': {
+    bonus: 'https://www.mexc.com/?shareCode=mexc-KIFSCrypto',
+    review: 'https://trading365.org/reviews/mexc-review',
   },
   'WEEX': {
     bonus: 'https://trading365.org/reviews/weex-review',
@@ -98,10 +99,6 @@ const EXCHANGE_URLS: Record<string, { bonus: string; review: string }> = {
     bonus: 'https://trading365.org/reviews/coinex-review',
     review: 'https://trading365.org/reviews/coinex-review',
   },
-  'MEXC': {
-    bonus: 'https://trading365.org/reviews/mexc-review',
-    review: 'https://trading365.org/reviews/mexc-review',
-  },
 }
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
@@ -120,11 +117,14 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     notFound()
   }
 
-  const postIndex = posts.findIndex((p) => p.slug === slug)
-  const previousPost = postIndex < posts.length - 1 ? posts[postIndex + 1] : null
-  const nextPost = postIndex > 0 ? posts[postIndex - 1] : null
+  // For challenge posts, navigate only between other challenge posts (week != null)
+  // For regular articles, navigate between all published posts
+  const navPosts = post.week != null ? posts.filter(p => p.week != null) : posts
+  const postIndex = navPosts.findIndex((p) => p.slug === slug)
+  const previousPost = postIndex < navPosts.length - 1 ? navPosts[postIndex + 1] : null
+  const nextPost = postIndex > 0 ? navPosts[postIndex - 1] : null
 
-  const formattedDate = new Date(post.created_at).toLocaleDateString('en-US', {
+  const formattedDate = new Date(post.date).toLocaleDateString('en-US', {
     month: 'long',
     day: 'numeric',
     year: 'numeric',
