@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getPostById, updatePost } from '@/lib/db'
+import { getPostById, updatePost, deletePost } from '@/lib/db'
 import { isAuthenticated } from '@/lib/auth'
 import { revalidatePath } from 'next/cache'
 
@@ -61,6 +61,30 @@ export async function PUT(
     console.error('[v0] Error updating post:', error)
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Failed to update post' },
+      { status: 500 }
+    )
+  }
+}
+
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const authenticated = await isAuthenticated()
+    if (!authenticated) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+    const { id } = await params
+    await deletePost(parseInt(id))
+    revalidatePath('/blog')
+    revalidatePath('/')
+    revalidatePath('/admin/posts')
+    return NextResponse.json({ success: true })
+  } catch (error) {
+    console.error('Error deleting post:', error)
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : 'Failed to delete post' },
       { status: 500 }
     )
   }

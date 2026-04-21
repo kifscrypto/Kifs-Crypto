@@ -8,11 +8,14 @@ export interface BlogPost {
   title: string
   excerpt: string
   content: string
-  exchange: string
-  balance: number
-  week: number
+  exchange: string | null
+  balance: number | null
+  week: number | null
   date: string
   image_url: string | null
+  published: boolean
+  meta_title: string | null
+  meta_description: string | null
   created_at: string
   updated_at: string
 }
@@ -43,7 +46,16 @@ export interface AffiliateStats {
 
 export async function getPosts(): Promise<BlogPost[]> {
   const posts = await sql`
-    SELECT * FROM posts 
+    SELECT * FROM posts
+    ORDER BY date DESC
+  `
+  return posts as BlogPost[]
+}
+
+export async function getPublishedPosts(): Promise<BlogPost[]> {
+  const posts = await sql`
+    SELECT * FROM posts
+    WHERE published = TRUE
     ORDER BY date DESC
   `
   return posts as BlogPost[]
@@ -67,7 +79,8 @@ export async function getPostById(id: number): Promise<BlogPost | null> {
 
 export async function getLatestPosts(limit: number = 3): Promise<BlogPost[]> {
   const posts = await sql`
-    SELECT * FROM posts 
+    SELECT * FROM posts
+    WHERE published = TRUE
     ORDER BY date DESC
     LIMIT ${limit}
   `
@@ -75,40 +88,46 @@ export async function getLatestPosts(limit: number = 3): Promise<BlogPost[]> {
 }
 
 export async function createPost(post: Omit<BlogPost, 'id' | 'created_at' | 'updated_at'>): Promise<BlogPost> {
-  const now = new Date().toISOString()
   const result = await sql`
-    INSERT INTO posts (slug, title, excerpt, content, exchange, balance, week, date, image_url)
-    VALUES (${post.slug}, ${post.title}, ${post.excerpt}, ${post.content}, ${post.exchange}, ${post.balance}, ${post.week}, ${post.date}, ${post.image_url || null})
+    INSERT INTO posts (slug, title, excerpt, content, exchange, balance, week, date, image_url, published, meta_title, meta_description)
+    VALUES (
+      ${post.slug},
+      ${post.title},
+      ${post.excerpt},
+      ${post.content},
+      ${post.exchange ?? null},
+      ${post.balance ?? null},
+      ${post.week ?? null},
+      ${post.date},
+      ${post.image_url ?? null},
+      ${post.published ?? true},
+      ${post.meta_title ?? null},
+      ${post.meta_description ?? null}
+    )
     RETURNING *
   `
   return result[0] as BlogPost
 }
 
 export async function updatePost(id: number, post: Partial<Omit<BlogPost, 'id' | 'created_at' | 'updated_at'>>): Promise<BlogPost> {
-  // Use conditional updates - just update the fields that were provided
-  let result
-  
-  if (post.slug || post.title || post.excerpt || post.content || post.exchange || post.balance !== undefined || post.week !== undefined || post.date || post.image_url !== undefined) {
-    // Build dynamic UPDATE - update all provided fields at once
-    result = await sql`
-      UPDATE posts SET 
-        slug = COALESCE(${post.slug}, slug),
-        title = COALESCE(${post.title}, title),
-        excerpt = COALESCE(${post.excerpt}, excerpt),
-        content = COALESCE(${post.content}, content),
-        exchange = COALESCE(${post.exchange}, exchange),
-        balance = COALESCE(${post.balance !== undefined ? post.balance : null}, balance),
-        week = COALESCE(${post.week !== undefined ? post.week : null}, week),
-        date = COALESCE(${post.date}, date),
-        image_url = COALESCE(${post.image_url !== undefined ? post.image_url : null}, image_url)
-      WHERE id = ${id}
-      RETURNING *
-    `
-  } else {
-    // No updates provided, just return current post
-    result = await sql`SELECT * FROM posts WHERE id = ${id}`
-  }
-
+  const result = await sql`
+    UPDATE posts SET
+      slug             = COALESCE(${post.slug    ?? null}, slug),
+      title            = COALESCE(${post.title   ?? null}, title),
+      excerpt          = COALESCE(${post.excerpt  ?? null}, excerpt),
+      content          = COALESCE(${post.content  ?? null}, content),
+      date             = COALESCE(${post.date     ?? null}, date),
+      exchange         = ${post.exchange         ?? null},
+      balance          = ${post.balance          ?? null},
+      week             = ${post.week             ?? null},
+      image_url        = ${post.image_url        ?? null},
+      published        = COALESCE(${post.published != null ? post.published : null}, published),
+      meta_title       = ${post.meta_title       ?? null},
+      meta_description = ${post.meta_description ?? null},
+      updated_at       = NOW()
+    WHERE id = ${id}
+    RETURNING *
+  `
   return result[0] as BlogPost
 }
 

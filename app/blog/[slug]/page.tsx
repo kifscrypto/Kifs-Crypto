@@ -3,7 +3,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
-import { getPostBySlug, getPosts } from '@/lib/db'
+import { getPostBySlug, getPublishedPosts } from '@/lib/db'
 import { notFound } from 'next/navigation'
 
 interface BlogPostPageProps {
@@ -30,12 +30,12 @@ export async function generateMetadata(
   }
 
   return {
-    title: `${post.title} - KIFS Crypto`,
-    description: post.excerpt,
+    title: `${post.meta_title || post.title} - KIFS Crypto`,
+    description: post.meta_description || post.excerpt,
     canonical: `https://kifscrypto.com/blog/${post.slug}`,
     openGraph: {
-      title: post.title,
-      description: post.excerpt,
+      title: post.meta_title || post.title,
+      description: post.meta_description || post.excerpt,
       type: 'article',
       url: `https://kifscrypto.com/blog/${post.slug}`,
       images: [
@@ -51,8 +51,8 @@ export async function generateMetadata(
     },
     twitter: {
       card: 'summary_large_image',
-      title: post.title,
-      description: post.excerpt,
+      title: post.meta_title || post.title,
+      description: post.meta_description || post.excerpt,
       images: [
         `https://kifscrypto.com/api/og?title=${encodeURIComponent(post.title)}&balance=${encodeURIComponent(`$${parseFloat(post.balance).toFixed(2)}`)}&week=${post.week}`,
       ],
@@ -63,7 +63,7 @@ export async function generateMetadata(
 export async function generateStaticParams() {
   let posts = []
   try {
-    posts = await getPosts()
+    posts = await getPublishedPosts()
   } catch (error) {
     console.error('Error generating static params:', error)
   }
@@ -111,7 +111,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
   try {
     post = await getPostBySlug(slug)
-    posts = await getPosts()
+    posts = await getPublishedPosts()
   } catch (error) {
     console.error('Error fetching post data:', error)
   }
