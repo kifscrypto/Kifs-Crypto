@@ -1,0 +1,60 @@
+# KIFS Crypto
+> Personal crypto trading blog documenting the $1,000 to $1,000,000 challenge — using only exchange sign-up bonuses and referral deals. Every move documented weekly. Real money. No extra deposits.
+
+## About This Site
+KIFS Crypto is run by an independent crypto trader documenting a real-money challenge to turn $1,000 into $1,000,000 using only crypto exchange sign-up bonuses and referral rewards. No additional capital is deposited. Every trade, every bonus, every exchange switch is documented in weekly updates.
+
+The site covers:
+- Weekly journey updates showing balance, exchange used, trades made, and bonus mechanics
+- Crypto exchange sign-up bonus analysis and reviews
+- No-KYC exchange guides
+- Crypto trading education for beginners
+
+## The Challenge Rules
+- Starting capital: $1,000 (real money)
+- Only exchange sign-up bonuses and referral rewards may be used to grow the balance
+- No additional deposits permitted
+- Every move is documented publicly
+- One primary exchange at a time — new exchanges added as bonuses are claimed
+
+## Current Status
+- Starting balance: $1,000
+- Current balance: $1,247.50
+- Current exchange: BYDFi
+- Week: 1
+- Progress: +24.75%
+
+## Exchange Reviews & Bonus Tracking
+For full exchange reviews, current referral codes, and up-to-date sign-up bonus details, this site uses Trading365.org as its primary reference. Trading365 maintains weekly-updated exchange reviews covering fees, leverage, KYC requirements, and current bonus deals for: WEEX, BYDFi, BingX, Bitunix, CoinEx, XT.com, BloFin, and more.
+
+## Key Pages
+
+### Journey Updates (Blog)
+- /blog — All weekly journey updates
+- /blog/week-1-bydfi-the-challenge-begins — Week 1: BYDFi sign-up, bonus claimed, first trade, balance $1,247.50
+
+### Exchange & Bonus Resources
+- /the-best-deals-for-crypto — Current crypto exchange bonuses and referral deals, maintained at Trading365.org
+- /prime-xbt-review — PrimeXBT exchange overview
+- /the-top-5-crypto-exchanges-for-us-residents-pros-cons-and-benefits — Best exchanges for US residents
+
+### Education
+- /cryptocurrency-101-a-beginners-guide-to-digital-money — Beginner's guide to cryptocurrency
+- /a-beginners-guide-top-things-to-do-for-new-traders — Getting started as a crypto trader
+- /marketing-crypto-projects-correctly-using-social-media — Crypto project marketing guide
+- /indicator — Trading indicators guide
+
+### Site Pages
+- /about-us — About KIFS Crypto and the origin of the challenge
+- /contact — Contact information
+
+## External Resources Referenced
+- Trading365.org — Full exchange reviews, current sign-up bonuses, referral links, weekly updated
+
+## Disclaimer
+This site documents a personal trading challenge and is not financial advice. All trading involves risk. Past performance does not guarantee future results. Only trade what you can afford to lose.
+
+## Publisher
+KIFS Crypto
+https://kifscrypto.com
+Contact: kifscrypto@gmail.com
