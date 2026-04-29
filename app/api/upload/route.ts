@@ -37,12 +37,15 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ url: blob.url }, { status: 200 })
   } catch (error) {
-    console.error('[v0] Upload error:', error instanceof Error ? error.message : String(error))
+    console.error('[v0] UPLOAD ERROR DETAILS:', {
+      message: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+      type: error instanceof Error ? error.constructor.name : typeof error
+    })
     
     return NextResponse.json(
       { 
-        error: error instanceof Error ? error.message : 'Upload failed',
-        details: process.env.NODE_ENV === 'development' ? String(error) : undefined
+        error: error instanceof Error ? error.message : 'Upload failed'
       },
       { status: 500 }
     )
