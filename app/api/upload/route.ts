@@ -5,6 +5,7 @@ import { isAuthenticated } from '@/lib/auth'
 export async function POST(request: NextRequest) {
   try {
     const authenticated = await isAuthenticated()
+    console.log('[v0] Upload: auth check =', authenticated)
     if (!authenticated) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
@@ -16,8 +17,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 })
     }
 
+    console.log('[v0] Uploading file:', file.name, 'size:', file.size)
+
     // Upload to Vercel Blob (public store)
     const blob = await put(file.name, file, { access: 'public' })
+    console.log('[v0] Upload successful:', blob.url)
 
     return NextResponse.json({ url: blob.url })
   } catch (error) {
