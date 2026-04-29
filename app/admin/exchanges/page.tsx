@@ -7,6 +7,7 @@ import {
   createExchangeAction,
   updateExchangeAction,
   deleteExchangeAction,
+  syncExchangesFromPostsAction,
 } from '@/app/actions/exchanges'
 
 interface Exchange {
@@ -62,6 +63,7 @@ export default function ExchangesPage() {
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
   const [loading, setLoading] = useState(true)
   const [deleting, setDeleting] = useState<number | null>(null)
+  const [syncing, setSyncing] = useState(false)
 
   // Load exchanges
   useEffect(() => {
@@ -163,6 +165,20 @@ export default function ExchangesPage() {
     }
   }
 
+  async function handleSyncExchanges() {
+    setSyncing(true)
+    try {
+      await syncExchangesFromPostsAction()
+      setMessage({ type: 'success', text: 'Exchanges synced from posts successfully' })
+      loadExchanges()
+    } catch (error) {
+      console.error('Failed to sync exchanges:', error)
+      setMessage({ type: 'error', text: 'Failed to sync exchanges from posts' })
+    } finally {
+      setSyncing(false)
+    }
+  }
+
   function handleCancel() {
     setShowForm(false)
     setEditingId(null)
@@ -189,15 +205,24 @@ export default function ExchangesPage() {
             <h1 className="text-3xl font-bold text-[#f0f0f0]">Bonuses</h1>
             <p className="text-[#9ca3af]">Manage your bonus list</p>
           </div>
-          <button
-            onClick={() => {
-              setShowForm(!showForm)
-              if (showForm) handleCancel()
-            }}
-            className="px-6 py-3 bg-[#FFA500] text-[#080808] font-semibold rounded-lg hover:bg-[#FFB800] transition-colors"
-          >
-            {showForm ? 'Cancel' : 'New Bonus'}
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={handleSyncExchanges}
+              disabled={syncing}
+              className="px-6 py-3 bg-[#4B5563] text-[#f0f0f0] font-semibold rounded-lg hover:bg-[#5a6574] transition-colors disabled:opacity-50"
+            >
+              {syncing ? 'Syncing...' : 'Sync from Posts'}
+            </button>
+            <button
+              onClick={() => {
+                setShowForm(!showForm)
+                if (showForm) handleCancel()
+              }}
+              className="px-6 py-3 bg-[#FFA500] text-[#080808] font-semibold rounded-lg hover:bg-[#FFB800] transition-colors"
+            >
+              {showForm ? 'Cancel' : 'New Bonus'}
+            </button>
+          </div>
         </div>
 
         {/* Success/Error Message */}
