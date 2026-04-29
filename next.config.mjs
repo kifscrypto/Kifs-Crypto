@@ -1,152 +1,52 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  typescript: {
-    ignoreBuildErrors: true,
-  },
+// @ts-nocheck
+// This file was auto-created and injected by v0.
+// DO NOT MODIFY THIS FILE DIRECTLY.
+// EDIT THE USER CONFIG IN ./next.user-config.mjs INSTEAD.
+
+import userConfigImport from './next.user-config.mjs'
+import { fileURLToPath } from 'url'
+import path from 'path'
+
+const __v0_turbopack_root = undefined ?? path.dirname(fileURLToPath(import.meta.url))
+
+export default async function v0NextConfig(phase, { defaultConfig }) {
+  const userConfig = typeof userConfigImport === 'function'
+    ? await userConfigImport(phase, { defaultConfig })
+    : userConfigImport
+
+  return {
+  ...userConfig,
+  distDir: '.next',
+  devIndicators: false,
   images: {
-    unoptimized: true,
+    ...userConfig.images,
+    unoptimized: process.env.NODE_ENV === 'development',
   },
-  redirects: async () => {
-    return [
-      // Category redirects (with and without trailing slash)
-      {
-        source: '/category/trading',
-        destination: '/blog',
-        permanent: true,
-      },
-      {
-        source: '/category/trading/',
-        destination: '/blog',
-        permanent: true,
-      },
-      {
-        source: '/category/cryptocurrency-reviews',
-        destination: '/blog',
-        permanent: true,
-      },
-      {
-        source: '/category/cryptocurrency-reviews/',
-        destination: '/blog',
-        permanent: true,
-      },
-      {
-        source: '/category/education',
-        destination: '/blog',
-        permanent: true,
-      },
-      {
-        source: '/category/education/',
-        destination: '/blog',
-        permanent: true,
-      },
-      {
-        source: '/category/giveaways',
-        destination: '/blog',
-        permanent: true,
-      },
-      {
-        source: '/category/giveaways/',
-        destination: '/blog',
-        permanent: true,
-      },
-      {
-        source: '/category/news',
-        destination: '/blog',
-        permanent: true,
-      },
-      {
-        source: '/category/news/',
-        destination: '/blog',
-        permanent: true,
-      },
-      {
-        source: '/category/best-crypto-deals',
-        destination: '/the-best-deals-for-crypto',
-        permanent: true,
-      },
-      {
-        source: '/category/best-crypto-deals/',
-        destination: '/the-best-deals-for-crypto',
-        permanent: true,
-      },
-      // Tag redirects (with and without trailing slash)
-      {
-        source: '/tag/crypto-exchange',
-        destination: '/blog',
-        permanent: true,
-      },
-      {
-        source: '/tag/crypto-exchange/',
-        destination: '/blog',
-        permanent: true,
-      },
-      {
-        source: '/tag/trading-indicators',
-        destination: '/blog',
-        permanent: true,
-      },
-      {
-        source: '/tag/trading-indicators/',
-        destination: '/blog',
-        permanent: true,
-      },
-      {
-        source: '/tag/best-us-crypto-exchanges',
-        destination: '/the-top-5-crypto-exchanges-for-us-residents-pros-cons-and-benefits',
-        permanent: true,
-      },
-      {
-        source: '/tag/best-us-crypto-exchanges/',
-        destination: '/the-top-5-crypto-exchanges-for-us-residents-pros-cons-and-benefits',
-        permanent: true,
-      },
-      // Author and service redirects (with and without trailing slash)
-      {
-        source: '/author/admin',
-        destination: '/about-us',
-        permanent: true,
-      },
-      {
-        source: '/author/admin/',
-        destination: '/about-us',
-        permanent: true,
-      },
-      {
-        source: '/services',
-        destination: '/about-us',
-        permanent: true,
-      },
-      {
-        source: '/services/',
-        destination: '/about-us',
-        permanent: true,
-      },
-      // Catch-all category redirects
-      {
-        source: '/category/:slug',
-        destination: '/blog',
-        permanent: true,
-      },
-      {
-        source: '/category/:slug/',
-        destination: '/blog',
-        permanent: true,
-      },
-      // Catch-all tag redirects
-      {
-        source: '/tag/:slug',
-        destination: '/blog',
-        permanent: true,
-      },
-      {
-        source: '/tag/:slug/',
-        destination: '/blog',
-        permanent: true,
-      },
-    ]
+  logging: {
+    ...userConfig.logging,
+    fetches: { fullUrl: true, hmrRefreshes: true },
+    browserToTerminal: true,
   },
+  turbopack: {
+    ...userConfig.turbopack,
+    root: __v0_turbopack_root,
+  },
+  experimental: {
+    ...userConfig.experimental,
+    transitionIndicator: true,
+    turbopackFileSystemCacheForDev: process.env.TURBOPACK_PERSISTENT_CACHE !== 'false' && process.env.TURBOPACK_PERSISTENT_CACHE !== '0',
+    serverActions: {
+      ...userConfig.experimental?.serverActions,
+      allowedOrigins: [
+        ...(userConfig.experimental?.serverActions?.allowedOrigins || []),
+        '*.vusercontent.net',
+      ],
+    },
+  },
+  allowedDevOrigins: [
+    ...(userConfig.allowedDevOrigins || []),
+    '*.vusercontent.net',
+    '*.dev-vm.vusercontent.net',
+  ],
 }
-
-export default nextConfig
-
-
+}

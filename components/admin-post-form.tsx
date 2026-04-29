@@ -67,11 +67,27 @@ export default function AdminPostForm() {
     try {
       const fd = new FormData()
       fd.append('file', file)
-      const res = await fetch('/api/upload', { method: 'POST', body: fd })
-      if (!res.ok) { setError('Failed to upload image'); return }
+      console.log('[v0] Uploading file:', file.name)
+      const res = await fetch('/api/upload', { 
+        method: 'POST', 
+        body: fd,
+        credentials: 'include'
+      })
+      console.log('[v0] Upload response status:', res.status)
+      if (!res.ok) { 
+        const err = await res.json().catch(() => ({}))
+        console.log('[v0] Upload error response:', err)
+        setError(err.error || 'Failed to upload image')
+        return 
+      }
       const { url } = await res.json()
+      console.log('[v0] Upload successful, url:', url)
       setFormData(prev => ({ ...prev, image_url: url }))
-    } catch { setError('Failed to upload image') }
+      setError('')
+    } catch (err) { 
+      console.error('[v0] Upload catch error:', err)
+      setError(err instanceof Error ? err.message : 'Failed to upload image') 
+    }
     finally { setUploading(false) }
   }
 
