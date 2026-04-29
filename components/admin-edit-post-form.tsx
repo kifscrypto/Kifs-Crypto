@@ -68,11 +68,21 @@ export default function AdminEditPostForm({ post }: Props) {
     try {
       const fd = new FormData()
       fd.append('file', file)
-      const res = await fetch('/api/upload', { method: 'POST', body: fd })
-      if (!res.ok) { setError('Failed to upload image'); return }
+      const res = await fetch('/api/upload', { 
+        method: 'POST', 
+        body: fd,
+        credentials: 'include'
+      })
+      if (!res.ok) { 
+        const err = await res.json().catch(() => ({}))
+        setError(err.error || 'Failed to upload image')
+        return 
+      }
       const { url } = await res.json()
       setFormData(prev => ({ ...prev, image_url: url }))
-    } catch { setError('Failed to upload image') }
+    } catch (err) { 
+      setError(err instanceof Error ? err.message : 'Failed to upload image') 
+    }
     finally { setUploading(false) }
   }
 
