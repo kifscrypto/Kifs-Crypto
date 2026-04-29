@@ -1,7 +1,15 @@
 import { ReactNode } from 'react'
+import { redirect } from 'next/navigation'
 import AdminNav from '@/components/admin-nav'
+import { isAuthenticated } from '@/lib/auth'
 
-export default function AdminLayout({ children }: { children: ReactNode }) {
+export default async function AdminLayout({ children }: { children: ReactNode }) {
+  const authenticated = await isAuthenticated()
+  
+  if (!authenticated) {
+    redirect('/admin/login')
+  }
+
   return (
     <div className="flex min-h-screen bg-[#080808]">
       <AdminNav />
