@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getPosts, getLatestPosts, createPost } from '@/lib/db'
 import { isAuthenticated } from '@/lib/auth'
 import { revalidatePath, revalidateTag } from 'next/cache'
+import { syncExchangesFromPostsAction } from '@/app/actions/exchanges'
 
 export async function GET(req: NextRequest) {
   try {
@@ -36,16 +37,28 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json()
-    console.log('[v0] Creating post with data:', { title: body.title, slug: body.slug, week: body.week })
+    console.log('[v0] Creating post with data:', { title: body.title, slug: body.slug, week: body.week, exchange: body.exchange })
     
     const post = await createPost(body)
     
     console.log('[v0] Post created successfully:', { id: post.id, slug: post.slug })
     
+    // If post has an exchange, sync it to the exchanges list
+    if (body.exchange) {
+      try {
+        console.log('[v0] Syncing exchanges after post creation')
+        await syncExchangesFromPostsAction()
+      } catch (syncError) {
+        console.error('[v0] Error syncing exchanges:', syncError)
+        // Don't fail the post creation if sync fails
+      }
+    }
+    
     // Revalidate affected pages
     revalidateTag('posts')
     revalidatePath('/blog')
     revalidatePath('/admin/posts')
+    revalidatePath('/exchanges')
     revalidatePath('/')
 
     return NextResponse.json(post, { status: 201 })

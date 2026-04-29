@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getPostById, updatePost, deletePost } from '@/lib/db'
 import { isAuthenticated } from '@/lib/auth'
 import { revalidatePath } from 'next/cache'
+import { syncExchangesFromPostsAction } from '@/app/actions/exchanges'
 
 export async function GET(
   req: NextRequest,
@@ -50,9 +51,21 @@ export async function PUT(
     const post = await updatePost(parseInt(id), body)
     console.log('[v0] Edit post - Updated post:', post)
 
+    // If post has an exchange, sync it to the exchanges list
+    if (body.exchange) {
+      try {
+        console.log('[v0] Syncing exchanges after post update')
+        await syncExchangesFromPostsAction()
+      } catch (syncError) {
+        console.error('[v0] Error syncing exchanges:', syncError)
+        // Don't fail the post update if sync fails
+      }
+    }
+
     // Revalidate affected pages
     revalidatePath('/blog')
     revalidatePath(`/blog/${post.slug}`)
+    revalidatePath('/exchanges')
     revalidatePath('/')
     revalidatePath('/admin/posts')
 
@@ -78,6 +91,7 @@ export async function DELETE(
     const { id } = await params
     await deletePost(parseInt(id))
     revalidatePath('/blog')
+    revalidatePath('/exchanges')
     revalidatePath('/')
     revalidatePath('/admin/posts')
     return NextResponse.json({ success: true })
