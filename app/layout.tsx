@@ -10,8 +10,8 @@ const geist = Geist({ subsets: ["latin"], variable: '--font-sans' });
 const geistMono = Geist_Mono({ subsets: ["latin"], variable: '--font-mono' });
 
 export const metadata: Metadata = {
-  title: 'KIFS Crypto - $1,000 to $1,000,000',
-  description: 'A real money crypto trading challenge using only exchange sign-up bonuses. From $1,000 to $1,000,000 — every move documented weekly.',
+  title: 'KIFS Scan — Meme Coin Scanner | BASE + Solana',
+  description: 'Real-time meme coin scanner for BASE and Solana. Blunt verdicts. No fluff. Scan it before you ape in.',
   generator: 'v0.app',
   robots: 'index, follow',
   icons: {
@@ -19,15 +19,15 @@ export const metadata: Metadata = {
     apple: '/favicon.png',
   },
   openGraph: {
-    title: 'KIFS Crypto - $1,000 to $1,000,000',
-    description: 'A real money crypto trading challenge using only exchange sign-up bonuses.',
+    title: 'KIFS Scan — Meme Coin Scanner | BASE + Solana',
+    description: 'Real-time meme coin scanner for BASE and Solana. Blunt verdicts. No fluff. Scan it before you ape in.',
     type: 'website',
     locale: 'en_US',
   },
 }
 
 export const viewport: Viewport = {
-  themeColor: '#FFA500',
+  themeColor: '#0a0a0a',
   colorScheme: 'dark',
   userScalable: true,
 }
@@ -39,7 +39,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${geist.variable} ${geistMono.variable}`}>
-      <body className="font-sans antialiased bg-[#080808] text-[#f0f0f0]">
+      <body className="font-mono antialiased bg-[#0a0a0a] text-[#e8e8e8]">
         <Header />
         <main>{children}</main>
         <Footer />

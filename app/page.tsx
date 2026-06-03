@@ -1,246 +1,192 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
-import JourneyTracker from '@/components/journey-tracker'
-import BlogPostCard from '@/components/blog-post-card'
-import NewsletterSignup from '@/components/newsletter-signup'
-import { getLatestPosts, getJourneyStats } from '@/lib/db'
 
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
-  title: 'KIFS Crypto - $1,000 to $1,000,000 Using Sign-Up Bonuses',
-  description: 'A real money crypto trading challenge. Starting with $1,000, reaching for $1,000,000 using only exchange sign-up bonuses and referral deals. Every move documented weekly.',
+  title: 'KIFS Scan — Meme Coin Scanner | BASE + Solana',
+  description: 'Real-time meme coin scanner for BASE and Solana. Blunt verdicts. No fluff. Scan it before you ape in.',
   openGraph: {
-    title: 'KIFS Crypto - $1,000 to $1,000,000',
-    description: 'A real money crypto trading challenge using only exchange sign-up bonuses.',
+    title: 'KIFS Scan — Meme Coin Scanner | BASE + Solana',
+    description: 'Real-time meme coin scanner for BASE and Solana. Blunt verdicts. No fluff. Scan it before you ape in.',
   },
   canonical: 'https://kifscrypto.com',
 }
 
-export default async function Home() {
-  let latestPosts = []
-  let journeyStats = null
+const mockData = [
+  { token: '$RIBBIT', chain: 'SOL', verdict: 'BUY THE BITCH', mktCap: '$2.1M', liquidity: '$340K', change: '+1,840%', age: '5h', trending: true },
+  { token: '$HONK', chain: 'BASE', verdict: 'BUY THE BITCH', mktCap: '$184K', liquidity: '$62K', change: '+284%', age: '2h', trending: false },
+  { token: '$FLORK', chain: 'BASE', verdict: 'TREAD CAREFULLY', mktCap: '$93K', liquidity: '$29K', change: '+441%', age: '3h', trending: false },
+  { token: '$BONKR', chain: 'SOL', verdict: 'PENDING REVIEW', mktCap: '$28K', liquidity: '$11K', change: '+118%', age: '22m', trending: false },
+  { token: '$GAZL', chain: 'SOL', verdict: 'TREAD CAREFULLY', mktCap: '$47K', liquidity: '$18K', change: '+62%', age: '1h', trending: false },
+  { token: '$PEPPA', chain: 'BASE', verdict: 'PENDING REVIEW', mktCap: '$54K', liquidity: '$21K', change: '+203%', age: '34m', trending: false },
+  { token: '$MWAV', chain: 'BASE', verdict: 'SMELLS LIKE A RUG', mktCap: '$12K', liquidity: '$4K', change: '-38%', age: '43m', trending: false },
+  { token: '$SNEK2', chain: 'SOL', verdict: 'STAY THE F*** AWAY', mktCap: '$8K', liquidity: '$3K', change: '-14%', age: '1h', trending: false },
+]
 
-  try {
-    const [posts, stats] = await Promise.allSettled([
-      getLatestPosts(3),
-      getJourneyStats(),
-    ])
-
-    if (posts.status === 'fulfilled') {
-      latestPosts = posts.value
-    }
-    if (stats.status === 'fulfilled') {
-      journeyStats = stats.value
-    }
-  } catch (error) {
-    console.error('Error fetching data:', error)
-    // Continue with empty data
+const getVerdictStyles = (verdict: string) => {
+  switch (verdict) {
+    case 'BUY THE BITCH':
+      return 'bg-[#001a0a] text-[#00cc66] border border-[#004d1e]'
+    case 'TREAD CAREFULLY':
+      return 'bg-[#1a1200] text-[#ffaa00] border border-[#4d3600]'
+    case 'SMELLS LIKE A RUG':
+      return 'bg-[#1a0000] text-[#ff4444] border border-[#4d0000]'
+    case 'STAY THE F*** AWAY':
+      return 'bg-[#0d0000] text-[#ff2222] border border-[#330000]'
+    case 'PENDING REVIEW':
+      return 'bg-[#111111] text-[#444444] border border-[#1f1f1f]'
+    default:
+      return 'bg-[#111111] text-[#555555] border border-[#1f1f1f]'
   }
+}
 
-  const trackerData = journeyStats || {
-    starting_balance: 1000,
-    current_balance: 1247.50,
-    target_balance: 1000000,
-    current_exchange: 'BYDFi',
-    week: 1,
-    percent_gain: 24.75,
+const getChainStyles = (chain: string) => {
+  if (chain === 'SOL') {
+    return 'bg-[#1a0a2e] text-[#aa77ff] border border-[#441a66]'
   }
+  return 'bg-[#0a1628] text-[#4488ff] border border-[#1a3366]'
+}
 
+export default function Home() {
   return (
     <div className="w-full">
-      {/* JSON-LD Schema for Financial Challenge */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'FinancialChallenge',
-            name: 'KIFS Crypto - $1M Challenge',
-            description:
-              'A real money crypto trading challenge using only exchange sign-up bonuses, starting from $1,000 with a target of $1,000,000.',
-            startingAmount: {
-              '@type': 'PriceSpecification',
-              priceCurrency: 'USD',
-              price: '1000',
-            },
-            targetAmount: {
-              '@type': 'PriceSpecification',
-              priceCurrency: 'USD',
-              price: '1000000',
-            },
-            url: 'https://kifscrypto.com',
-            image: 'https://kifscrypto.com/images/kifs-logo.png',
-            creator: {
-              '@type': 'Organization',
-              name: 'KIFS Crypto',
-              url: 'https://kifscrypto.com',
-              sameAs: [],
-            },
-          }),
-        }}
-      />
-
       {/* Hero Section */}
-      <section className="w-full px-4 sm:px-6 lg:px-8 py-20 sm:py-32 text-center">
-        <div className="max-w-3xl mx-auto">
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-[#f0f0f0] mb-6">
-            <span className="text-[#FFA500]">$1,000</span> <span className="text-[#9ca3af]">→</span> <span className="text-[#FFA500]">$1,000,000</span>
-          </h1>
-          <p className="text-lg sm:text-xl text-[#9ca3af] mb-8">
-            Using only crypto exchange sign-up bonuses. Every move documented.
-          </p>
-          <Link
-            href="/blog"
-            className="inline-block px-8 py-3 bg-[#FFA500] text-[#080808] font-bold rounded-lg hover:bg-[#FFB800] transition-colors"
-          >
-            Read Latest Update
-          </Link>
-        </div>
-      </section>
+      <section className="w-full px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+        <div className="max-w-6xl mx-auto">
+          <div className="space-y-6">
+            {/* Main Headline */}
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white">
+              Scan it before you ape in.
+            </h1>
 
-      {/* Journey Tracker Widget */}
-      <section id="tracker" className="w-full px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
-        <div className="max-w-4xl mx-auto">
-          <JourneyTracker data={trackerData} />
-        </div>
-      </section>
-
-      {/* Latest Posts Preview */}
-      <section className="w-full px-4 sm:px-6 lg:px-8 py-12 sm:py-16 border-t border-[#1f2937]">
-        <div className="max-w-4xl mx-auto">
-          <div className="mb-8">
-            <h2 className="text-2xl sm:text-3xl font-bold text-[#f0f0f0] mb-2">
-              Latest Updates
-            </h2>
-            <p className="text-[#9ca3af]">
-              Weekly journey logs from the challenge
-            </p>
-          </div>
-
-          {latestPosts.length > 0 ? (
-            <div className="grid md:grid-cols-3 gap-6 mb-8">
-              {latestPosts.map((post) => (
-                <BlogPostCard key={post.slug} post={post} />
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-12">
-              <p className="text-[#9ca3af]">No posts yet. Check back soon.</p>
-            </div>
-          )}
-
-          <div className="text-center">
-            <Link
-              href="/blog"
-              className="inline-block px-6 py-2 border border-[#FFA500] text-[#FFA500] rounded-lg hover:bg-[#FFA500]/10 transition-colors"
-            >
-              View All Posts
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* About the Challenge Section */}
-      <section className="w-full px-4 sm:px-6 lg:px-8 py-12 sm:py-16 border-t border-[#1f2937]">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-2xl sm:text-3xl font-bold text-[#f0f0f0] mb-8">
-            About the Challenge
-          </h2>
-
-          <div className="grid md:grid-cols-2 gap-8">
-            <div className="bg-[#0d0d0d] border border-[#1f2937] rounded-lg p-6">
-              <h3 className="text-lg font-semibold text-[#FFA500] mb-3">
-                The Rules
-              </h3>
-              <ul className="space-y-2 text-[#9ca3af] text-sm">
-                <li className="flex gap-2">
-                  <span className="text-[#FF3333]">✓</span>
-                  <span>Starting capital: $1,000</span>
-                </li>
-                <li className="flex gap-2">
-                  <span className="text-[#FF3333]">✓</span>
-                  <span>Only sign-up bonuses and referral rewards allowed</span>
-                </li>
-                <li className="flex gap-2">
-                  <span className="text-[#FF3333]">✓</span>
-                  <span>No additional deposits permitted</span>
-                </li>
-                <li className="flex gap-2">
-                  <span className="text-[#FF3333]">✓</span>
-                  <span>All trades and moves documented weekly</span>
-                </li>
-                <li className="flex gap-2">
-                  <span className="text-[#FF3333]">✓</span>
-                  <span>Target: $1,000,000</span>
-                </li>
-              </ul>
+            {/* Live Status */}
+            <div className="flex items-center gap-2">
+              <span className="inline-block w-2 h-2 bg-[#ff3333] rounded-full animate-pulse"></span>
+              <span className="text-xs text-[#555555] tracking-widest">
+                LIVE · BASE + SOLANA · UPDATED EVERY 60S
+              </span>
             </div>
 
-            <div className="bg-[#0d0d0d] border border-[#1f2937] rounded-lg p-6">
-              <h3 className="text-lg font-semibold text-[#FFA500] mb-3">
-                Why This Challenge?
-              </h3>
-              <p className="text-[#9ca3af] text-sm leading-relaxed">
-                Crypto exchanges offer substantial bonuses to new traders. This challenge tests whether those incentives can compound into real wealth. It&apos;s a real money experiment documenting every move, every win, and every mistake. No hype. No fake accounts. Just raw data and honest updates.
-              </p>
+            {/* Stats Row */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 py-8">
+              <div className="bg-[#111111] border border-[#1f1f1f] rounded-[3px] p-4">
+                <div className="text-2xl sm:text-3xl font-bold text-white">247</div>
+                <div className="text-xs text-[#555555] mt-1">LAUNCHES TODAY</div>
+              </div>
+              <div className="bg-[#111111] border border-[#1f1f1f] rounded-[3px] p-4">
+                <div className="text-2xl sm:text-3xl font-bold text-[#00cc66]">31</div>
+                <div className="text-xs text-[#555555] mt-1">BUY THE BITCH</div>
+              </div>
+              <div className="bg-[#111111] border border-[#1f1f1f] rounded-[3px] p-4">
+                <div className="text-2xl sm:text-3xl font-bold text-[#ffaa00]">84</div>
+                <div className="text-xs text-[#555555] mt-1">TREAD CAREFULLY</div>
+              </div>
+              <div className="bg-[#111111] border border-[#1f1f1f] rounded-[3px] p-4">
+                <div className="text-2xl sm:text-3xl font-bold text-[#ff3333]">112</div>
+                <div className="text-xs text-[#555555] mt-1">STAY AWAY</div>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Newsletter Signup Section - Hidden for now */}
-      {/* <section className="w-full px-4 sm:px-6 lg:px-8 py-12 sm:py-16 border-t border-[#1f2937]">
-        <div className="max-w-2xl mx-auto">
-          <NewsletterSignup />
+      {/* Search Bar */}
+      <section className="w-full px-4 sm:px-6 lg:px-8 py-4 border-t border-[#1f1f1f]">
+        <div className="max-w-6xl mx-auto">
+          <input
+            type="text"
+            placeholder="Search by token name or contract address..."
+            className="w-full bg-[#0f0f0f] border border-[#1f1f1f] rounded-[3px] px-4 py-3 text-[#e8e8e8] placeholder-[#555555] focus:outline-none focus:border-[#ff3333] transition-colors"
+          />
         </div>
-      </section> */}
+      </section>
 
-      {/* Recommended Resources */}
-      <section className="w-full px-4 sm:px-6 lg:px-8 py-12 sm:py-16 border-t border-[#1f2937]">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-2xl sm:text-3xl font-bold text-[#f0f0f0] mb-6">
-            Recommended Resources
-          </h2>
-          <div className="bg-[#0d0d0d] border border-[#1f2937] rounded-lg p-6 flex items-center justify-between gap-4">
-            <div>
-              <p className="text-xs text-[#FFA500] uppercase tracking-widest font-medium mb-1">Exchange Reviews & Bonuses</p>
-              <Link
-                href="/blog/trading365-review-best-crypto-exchange-bonuses"
-                className="text-[#f0f0f0] font-semibold text-lg hover:text-[#FFA500] transition-colors"
-              >
-                Best Crypto Exchange Bonuses 2026
-              </Link>
-              <p className="text-[#6b7280] text-sm mt-1">Reviews, fee comparisons, and the biggest verified sign-up bonuses.</p>
-            </div>
-            <Link
-              href="/blog/trading365-review-best-crypto-exchange-bonuses"
-              className="flex-shrink-0 px-5 py-2 border border-[#FFA500] text-[#FFA500] rounded-lg hover:bg-[#FFA500]/10 transition-colors text-sm font-medium"
-            >
-              Read →
-            </Link>
+      {/* Filter Row */}
+      <section className="w-full px-4 sm:px-6 lg:px-8 py-4 border-t border-[#1f1f1f]">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex gap-2 overflow-x-auto pb-2">
+            <button className="px-4 py-2 bg-transparent border border-[#ff3333] text-[#ff3333] rounded-[3px] text-sm whitespace-nowrap hover:bg-[#ff3333]/10 transition-colors">
+              ALL
+            </button>
+            <button className="px-4 py-2 bg-transparent border border-[#1f1f1f] text-[#555555] rounded-[3px] text-sm whitespace-nowrap hover:border-[#4488ff] hover:text-[#4488ff] transition-colors">
+              BASE
+            </button>
+            <button className="px-4 py-2 bg-transparent border border-[#1f1f1f] text-[#555555] rounded-[3px] text-sm whitespace-nowrap hover:border-[#aa77ff] hover:text-[#aa77ff] transition-colors">
+              SOLANA
+            </button>
+            <button className="px-4 py-2 bg-transparent border border-[#1f1f1f] text-[#555555] rounded-[3px] text-sm whitespace-nowrap hover:border-[#00cc66] hover:text-[#00cc66] transition-colors">
+              BUY THE BITCH
+            </button>
+            <button className="px-4 py-2 bg-transparent border border-[#1f1f1f] text-[#555555] rounded-[3px] text-sm whitespace-nowrap hover:border-[#ffaa00] hover:text-[#ffaa00] transition-colors">
+              TREAD CAREFULLY
+            </button>
+            <button className="px-4 py-2 bg-transparent border border-[#1f1f1f] text-[#555555] rounded-[3px] text-sm whitespace-nowrap hover:border-[#ff3333] hover:text-[#ff3333] transition-colors">
+              STAY AWAY
+            </button>
+            <button className="px-4 py-2 bg-transparent border border-[#1f1f1f] text-[#555555] rounded-[3px] text-sm whitespace-nowrap hover:border-[#e8e8e8] hover:text-[#e8e8e8] transition-colors">
+              REVIEWED
+            </button>
+            <button className="px-4 py-2 bg-transparent border border-[#1f1f1f] text-[#555555] rounded-[3px] text-sm whitespace-nowrap hover:border-[#e8e8e8] hover:text-[#e8e8e8] transition-colors">
+              TRENDING
+            </button>
           </div>
         </div>
       </section>
 
-      {/* CTA Footer Section */}
-      <section className="w-full px-4 sm:px-6 lg:px-8 py-12 sm:py-16 border-t border-[#1f2937] bg-[#0d0d0d]">
-        <div className="max-w-2xl mx-auto text-center space-y-6">
-          <div>
-            <h2 className="text-2xl sm:text-3xl font-bold text-[#f0f0f0] mb-2">
-              Follow the Journey
-            </h2>
-            <p className="text-[#9ca3af]">
-              New updates every week. Real money. Real results. No nonsense.
-            </p>
+      {/* Scanner Feed Table */}
+      <section className="w-full px-4 sm:px-6 lg:px-8 py-6 border-t border-[#1f1f1f]">
+        <div className="max-w-6xl mx-auto">
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-[#1f1f1f]">
+                  <th className="text-left py-3 px-4 text-[#555555] font-medium">TOKEN</th>
+                  <th className="text-left py-3 px-4 text-[#555555] font-medium">VERDICT</th>
+                  <th className="text-right py-3 px-4 text-[#555555] font-medium">MKT CAP</th>
+                  <th className="text-right py-3 px-4 text-[#555555] font-medium">LIQUIDITY</th>
+                  <th className="text-right py-3 px-4 text-[#555555] font-medium">24H</th>
+                  <th className="text-right py-3 px-4 text-[#555555] font-medium">AGE</th>
+                </tr>
+              </thead>
+              <tbody>
+                {mockData.map((row, idx) => (
+                  <tr key={idx} className="border-b border-[#1f1f1f] hover:bg-[#111111] transition-colors cursor-pointer">
+                    <td className="py-3 px-4 text-[#e8e8e8] font-medium">
+                      <Link href={`/coins/${row.token.toLowerCase().replace('$', '')}`} className="hover:text-[#ff3333] transition-colors">
+                        <div className="flex items-center gap-2">
+                          <span>{row.token}</span>
+                          {row.trending && <span className="text-[#ff3333] text-xs">🔥</span>}
+                        </div>
+                        <div className="text-xs text-[#555555]">{row.chain}</div>
+                      </Link>
+                    </td>
+                    <td className="py-3 px-4">
+                      <span className={`px-2 py-1 rounded-[3px] text-xs font-medium inline-block whitespace-nowrap ${getVerdictStyles(row.verdict)}`}>
+                        {row.verdict}
+                      </span>
+                    </td>
+                    <td className="py-3 px-4 text-right text-[#e8e8e8]">{row.mktCap}</td>
+                    <td className="py-3 px-4 text-right text-[#e8e8e8]">{row.liquidity}</td>
+                    <td className={`py-3 px-4 text-right font-medium ${row.change.startsWith('+') ? 'text-[#00cc66]' : 'text-[#ff3333]'}`}>
+                      {row.change}
+                    </td>
+                    <td className="py-3 px-4 text-right text-[#555555]">{row.age}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
+        </div>
+      </section>
 
-          <Link
-            href="/blog"
-            className="inline-block px-8 py-3 bg-[#FFA500] text-[#080808] font-semibold rounded-lg hover:bg-[#FFB800] transition-colors"
-          >
-            Read All Updates
-          </Link>
+      {/* Footer Bar */}
+      <section className="w-full px-4 sm:px-6 lg:px-8 py-4 border-t border-[#1f1f1f] bg-[#111111]">
+        <div className="max-w-6xl mx-auto flex items-center justify-between text-xs text-[#555555]">
+          <div>SHOWING 8 OF 247 LAUNCHES · LAST 24H</div>
+          <div className="flex gap-6">
+            <span>31 BUY · 84 TREAD · 112 STAY</span>
+          </div>
         </div>
       </section>
     </div>
