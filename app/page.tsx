@@ -91,6 +91,26 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Announcements Banner */}
+      <section className="w-full px-4 sm:px-6 lg:px-8 py-4 border-t border-[#1f1f1f] bg-[#111111]">
+        <div className="max-w-6xl mx-auto">
+          <Link href="/blog/kifscrypto-is-now-kifs-scan" className="block p-4 bg-[#0a0a0a] border border-[#ff3333]/20 rounded-[3px] hover:border-[#ff3333]/50 transition-colors group">
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex-1">
+                <div className="text-xs text-[#ff3333] font-medium mb-2">ANNOUNCEMENT</div>
+                <h3 className="text-lg font-bold text-white group-hover:text-[#ff3333] transition-colors">
+                  The challenge is over. KIFS Scan is live.
+                </h3>
+                <p className="text-sm text-[#555555] mt-2">
+                  From the $1k challenge to meme coin scanner — here&apos;s what changed and why.
+                </p>
+              </div>
+              <div className="text-[#ff3333] text-xl leading-none group-hover:translate-x-1 transition-transform">→</div>
+            </div>
+          </Link>
+        </div>
+      </section>
+
       {/* Search Bar */}
       <section className="w-full px-4 sm:px-6 lg:px-8 py-4 border-t border-[#1f1f1f]">
         <div className="max-w-6xl mx-auto">

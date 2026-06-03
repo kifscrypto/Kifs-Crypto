@@ -6,26 +6,7 @@ async function insertAnnouncement() {
   console.log('[v0] Inserting announcement post...');
 
   try {
-    const result = await sql`
-      INSERT INTO posts (
-        slug,
-        title,
-        excerpt,
-        content,
-        exchange,
-        balance,
-        week,
-        date,
-        image_url,
-        published,
-        meta_title,
-        meta_description
-      )
-      VALUES (
-        'kifscrypto-is-now-kifs-scan',
-        'The challenge is over. KIFS Scan is live.',
-        'From the $1k challenge to meme coin scanner — here''s what changed and why.',
-        $1$We started the $1,000 to $1,000,000 challenge with good intentions. Document every trade, every exchange bonus, every move. Real money, real results.
+    const content = `We started the $1,000 to $1,000,000 challenge with good intentions. Document every trade, every exchange bonus, every move. Real money, real results.
 
 But something more useful came along.
 
@@ -47,9 +28,32 @@ The challenge was a diary. This is a tool.
 
 If you found us through the BYDFi or Bitunix posts — the exchange reviews and bonus guides live at Trading365.org. That's where we do the proper deep dives.
 
-KIFS Scan is for before you ape in.$1$,
+KIFS Scan is for before you ape in.`;
+
+    const result = await sql`
+      INSERT INTO posts (
+        slug,
+        title,
+        excerpt,
+        content,
+        exchange,
+        balance,
+        week,
+        date,
+        image_url,
+        published,
+        meta_title,
+        meta_description
+      )
+      VALUES (
+        'kifscrypto-is-now-kifs-scan',
+        'The challenge is over. KIFS Scan is live.',
+        'From the $1k challenge to meme coin scanner — here''s what changed and why.',
+        ${content},
         NULL,
         NULL,
+        NULL,
+        NOW(),
         NULL,
         true,
         'KIFS Scan Is Live — The Pivot From The Challenge',
