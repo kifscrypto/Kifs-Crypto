@@ -3,7 +3,6 @@ import { Metadata } from 'next'
 export const metadata: Metadata = {
   title: 'Trading Indicators - Technical Analysis Guide',
   description: 'Guide to using trading indicators for cryptocurrency technical analysis.',
-  canonical: 'https://kifscrypto.com/indicator',
 }
 
 export default function IndicatorPage() {

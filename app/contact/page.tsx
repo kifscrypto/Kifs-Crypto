@@ -4,7 +4,6 @@ import Link from 'next/link'
 export const metadata: Metadata = {
   title: 'Contact - KIFS Crypto',
   description: 'Get in touch with KIFS Crypto. Questions about the challenge or the journey?',
-  canonical: 'https://kifscrypto.com/contact',
 }
 
 export default function ContactPage() {

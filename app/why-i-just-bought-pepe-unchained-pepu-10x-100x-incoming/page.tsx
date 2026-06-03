@@ -3,7 +3,6 @@ import { Metadata } from 'next'
 export const metadata: Metadata = {
   title: 'Why I Just Bought PEPE Unchained (PEPU) — 10x 100x Incoming?',
   description: 'Trading analysis: PEPE Unchained token review and potential gains discussion.',
-  canonical: 'https://kifscrypto.com/why-i-just-bought-pepe-unchained-pepu-10x-100x-incoming',
 }
 
 export default function PEPUPage() {

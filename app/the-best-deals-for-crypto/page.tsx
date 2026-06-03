@@ -3,7 +3,6 @@ import { Metadata } from 'next'
 export const metadata: Metadata = {
   title: 'The Best Crypto Exchange Deals & Sign-Up Bonuses',
   description: 'Current exchange bonuses and referral deals — updated weekly. Track all active promotions for crypto trading.',
-  canonical: 'https://kifscrypto.com/the-best-deals-for-crypto',
 }
 
 export default function BestDealsPage() {

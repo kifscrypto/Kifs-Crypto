@@ -37,7 +37,6 @@ export async function generateMetadata(
     title: `${post.meta_title || post.title} - KIFS Crypto`,
     description: post.meta_description || post.excerpt,
     alternates: {
-      canonical: `https://kifscrypto.com/blog/${post.slug}`,
     },
     openGraph: {
       title: post.meta_title || post.title,
@@ -58,7 +57,7 @@ export async function generateMetadata(
 }
 
 export async function generateStaticParams() {
-  let posts = []
+  let posts: any[] = []
   try {
     posts = await getPublishedPosts()
   } catch (error) {
@@ -104,7 +103,7 @@ const EXCHANGE_URLS: Record<string, { bonus: string; review: string }> = {
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const { slug } = await params
   let post = null
-  let posts = []
+  let posts: any[] = []
 
   try {
     post = await getPostBySlug(slug)

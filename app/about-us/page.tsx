@@ -4,7 +4,6 @@ import Link from 'next/link'
 export const metadata: Metadata = {
   title: 'About Us - KIFS Crypto',
   description: 'Who is KIFS? Why this challenge? The origin story behind the $1,000 to $1,000,000 crypto trading journey.',
-  canonical: 'https://kifscrypto.com/about-us',
 }
 
 export default function AboutPage() {

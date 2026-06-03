@@ -14,17 +14,17 @@ interface Exchange {
   id: number
   name: string
   slug: string
-  description: string
-  bonus_amount: string
-  bonus_type: string
+  description: string | null
+  bonus_amount: string | null
+  bonus_type: string | null
   difficulty: string
   status: string
   week_claimed: string | null
-  referral_link: string
+  referral_link: string | null
   logo_url: string | null
   sort_order: number
   created_at: string
-  updated_at: string
+  updated_at?: string
 }
 
 interface FormData {
@@ -33,8 +33,8 @@ interface FormData {
   description: string
   bonus_amount: string
   bonus_type: string
-  difficulty: string
-  status: string
+  difficulty: 'Easy' | 'Medium' | 'Hard'
+  status: 'Claimed' | 'Active Now' | 'Coming Soon'
   week_claimed: string
   referral_link: string
   logo_url: string
@@ -135,13 +135,13 @@ export default function ExchangesPage() {
     setFormData({
       name: exchange.name,
       slug: exchange.slug,
-      description: exchange.description,
-      bonus_amount: exchange.bonus_amount,
-      bonus_type: exchange.bonus_type,
-      difficulty: exchange.difficulty,
-      status: exchange.status,
+      description: exchange.description || '',
+      bonus_amount: exchange.bonus_amount || '',
+      bonus_type: exchange.bonus_type || '',
+      difficulty: (exchange.difficulty as 'Easy' | 'Medium' | 'Hard') || 'Medium',
+      status: (exchange.status as 'Claimed' | 'Active Now' | 'Coming Soon') || 'Active Now',
       week_claimed: exchange.week_claimed || '',
-      referral_link: exchange.referral_link,
+      referral_link: exchange.referral_link || '',
       logo_url: exchange.logo_url || '',
       sort_order: exchange.sort_order,
     })

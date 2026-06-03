@@ -11,7 +11,6 @@ export const metadata: Metadata = {
     title: 'Blog - KIFS Crypto',
     description: 'Weekly updates from the $1,000 to $1,000,000 crypto trading challenge.',
   },
-  canonical: 'https://kifscrypto.com/blog',
 }
 
 export default async function BlogPage() {

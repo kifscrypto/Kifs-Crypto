@@ -3,7 +3,6 @@ import { Metadata } from 'next'
 export const metadata: Metadata = {
   title: "A Beginner's Guide - Top Things to Do for New Traders",
   description: 'Beginner guide for new cryptocurrency traders. Essential tips and best practices.',
-  canonical: 'https://kifscrypto.com/a-beginners-guide-top-things-to-do-for-new-traders',
 }
 
 export default function BeginnersGuidePage() {

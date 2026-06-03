@@ -4,7 +4,6 @@ import Link from 'next/link'
 export const metadata: Metadata = {
   title: 'The Top 5 Crypto Exchanges for US Residents - Pros, Cons & Benefits',
   description: 'Best crypto exchanges for US residents. Comprehensive comparison of fees, features, and sign-up bonuses.',
-  canonical: 'https://kifscrypto.com/the-top-5-crypto-exchanges-for-us-residents-pros-cons-and-benefits',
 }
 
 export default function TopExchangesPage() {

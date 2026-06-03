@@ -4,7 +4,6 @@ import Link from 'next/link'
 export const metadata: Metadata = {
   title: 'PrimeXBT Review - Crypto Trading Platform',
   description: 'PrimeXBT review and trading guide. Sign-up bonuses and current deals available.',
-  canonical: 'https://kifscrypto.com/prime-xbt-review',
 }
 
 export default function PrimeXBTReviewPage() {

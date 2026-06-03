@@ -4,7 +4,6 @@ import Link from 'next/link'
 export const metadata: Metadata = {
   title: 'Keystone Pro 3 Review - Hardware Wallet Guide',
   description: 'Keystone Pro 3 hardware wallet review and security guide.',
-  canonical: 'https://kifscrypto.com/keystone-pro-3-review',
 }
 
 export default function KeystoneProReviewPage() {

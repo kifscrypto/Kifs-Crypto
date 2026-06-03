@@ -1,7 +1,9 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
+import { getCoins, getCoinsStats } from '@/lib/queries'
 
 export const dynamic = 'force-dynamic'
+export const revalidate = 60
 
 export const metadata: Metadata = {
   title: 'KIFS Scan — Meme Coin Scanner | BASE + Solana',
@@ -10,31 +12,41 @@ export const metadata: Metadata = {
     title: 'KIFS Scan — Meme Coin Scanner | BASE + Solana',
     description: 'Real-time meme coin scanner for BASE and Solana. Blunt verdicts. No fluff. Scan it before you ape in.',
   },
-  canonical: 'https://kifscrypto.com',
 }
 
-const mockData = [
-  { token: '$RIBBIT', chain: 'SOL', verdict: 'BUY THE BITCH', mktCap: '$2.1M', liquidity: '$340K', change: '+1,840%', age: '5h', trending: true },
-  { token: '$HONK', chain: 'BASE', verdict: 'BUY THE BITCH', mktCap: '$184K', liquidity: '$62K', change: '+284%', age: '2h', trending: false },
-  { token: '$FLORK', chain: 'BASE', verdict: 'TREAD CAREFULLY', mktCap: '$93K', liquidity: '$29K', change: '+441%', age: '3h', trending: false },
-  { token: '$BONKR', chain: 'SOL', verdict: 'PENDING REVIEW', mktCap: '$28K', liquidity: '$11K', change: '+118%', age: '22m', trending: false },
-  { token: '$GAZL', chain: 'SOL', verdict: 'TREAD CAREFULLY', mktCap: '$47K', liquidity: '$18K', change: '+62%', age: '1h', trending: false },
-  { token: '$PEPPA', chain: 'BASE', verdict: 'PENDING REVIEW', mktCap: '$54K', liquidity: '$21K', change: '+203%', age: '34m', trending: false },
-  { token: '$MWAV', chain: 'BASE', verdict: 'SMELLS LIKE A RUG', mktCap: '$12K', liquidity: '$4K', change: '-38%', age: '43m', trending: false },
-  { token: '$SNEK2', chain: 'SOL', verdict: 'STAY THE F*** AWAY', mktCap: '$8K', liquidity: '$3K', change: '-14%', age: '1h', trending: false },
-]
+function formatNumber(num: number): string {
+  if (num >= 1000000) return `$${(num / 1000000).toFixed(1)}M`
+  if (num >= 1000) return `$${(num / 1000).toFixed(1)}K`
+  return `$${num.toFixed(0)}`
+}
+
+function formatAge(date: string): string {
+  const now = new Date()
+  const then = new Date(date)
+  const diffMs = now.getTime() - then.getTime()
+  const diffMins = Math.floor(diffMs / 60000)
+  const diffHours = Math.floor(diffMins / 60)
+  const diffDays = Math.floor(diffHours / 24)
+
+  if (diffMins < 1) return 'now'
+  if (diffMins < 60) return `${diffMins}m`
+  if (diffHours < 24) return `${diffHours}h`
+  return `${diffDays}d`
+}
 
 const getVerdictStyles = (verdict: string) => {
-  switch (verdict) {
-    case 'BUY THE BITCH':
+  const normalizedVerdict = verdict.toUpperCase().replace(/\s+/g, '_')
+  
+  switch (normalizedVerdict) {
+    case 'BUY_THE_BITCH':
       return 'bg-[#001a0a] text-[#00cc66] border border-[#004d1e]'
-    case 'TREAD CAREFULLY':
+    case 'TREAD_CAREFULLY':
       return 'bg-[#1a1200] text-[#ffaa00] border border-[#4d3600]'
-    case 'SMELLS LIKE A RUG':
+    case 'SMELLS_LIKE_A_RUG':
       return 'bg-[#1a0000] text-[#ff4444] border border-[#4d0000]'
-    case 'STAY THE F*** AWAY':
+    case 'STAY_THE_F***_AWAY':
       return 'bg-[#0d0000] text-[#ff2222] border border-[#330000]'
-    case 'PENDING REVIEW':
+    case 'PENDING_REVIEW':
       return 'bg-[#111111] text-[#444444] border border-[#1f1f1f]'
     default:
       return 'bg-[#111111] text-[#555555] border border-[#1f1f1f]'
@@ -48,7 +60,9 @@ const getChainStyles = (chain: string) => {
   return 'bg-[#0a1628] text-[#4488ff] border border-[#1a3366]'
 }
 
-export default function Home() {
+export default async function Home() {
+  const [coinsData, statsData] = await Promise.all([getCoins(1, 8), getCoinsStats()])
+
   return (
     <div className="w-full">
       {/* Hero Section */}
@@ -71,19 +85,19 @@ export default function Home() {
             {/* Stats Row */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 py-8">
               <div className="bg-[#111111] border border-[#1f1f1f] rounded-[3px] p-4">
-                <div className="text-2xl sm:text-3xl font-bold text-white">247</div>
+                <div className="text-2xl sm:text-3xl font-bold text-white">{statsData.total_launches_24h}</div>
                 <div className="text-xs text-[#555555] mt-1">LAUNCHES TODAY</div>
               </div>
               <div className="bg-[#111111] border border-[#1f1f1f] rounded-[3px] p-4">
-                <div className="text-2xl sm:text-3xl font-bold text-[#00cc66]">31</div>
+                <div className="text-2xl sm:text-3xl font-bold text-[#00cc66]">{statsData.verdict_counts.BUY_THE_BITCH}</div>
                 <div className="text-xs text-[#555555] mt-1">BUY THE BITCH</div>
               </div>
               <div className="bg-[#111111] border border-[#1f1f1f] rounded-[3px] p-4">
-                <div className="text-2xl sm:text-3xl font-bold text-[#ffaa00]">84</div>
+                <div className="text-2xl sm:text-3xl font-bold text-[#ffaa00]">{statsData.verdict_counts.TREAD_CAREFULLY}</div>
                 <div className="text-xs text-[#555555] mt-1">TREAD CAREFULLY</div>
               </div>
               <div className="bg-[#111111] border border-[#1f1f1f] rounded-[3px] p-4">
-                <div className="text-2xl sm:text-3xl font-bold text-[#ff3333]">112</div>
+                <div className="text-2xl sm:text-3xl font-bold text-[#ff3333]">{statsData.verdict_counts.STAY_AWAY}</div>
                 <div className="text-xs text-[#555555] mt-1">STAY AWAY</div>
               </div>
             </div>
@@ -170,30 +184,41 @@ export default function Home() {
                 </tr>
               </thead>
               <tbody>
-                {mockData.map((row, idx) => (
-                  <tr key={idx} className="border-b border-[#1f1f1f] hover:bg-[#111111] transition-colors cursor-pointer">
-                    <td className="py-3 px-4 text-[#e8e8e8] font-medium">
-                      <Link href={`/coins/${row.token.toLowerCase().replace('$', '')}`} className="hover:text-[#ff3333] transition-colors">
-                        <div className="flex items-center gap-2">
-                          <span>{row.token}</span>
-                          {row.trending && <span className="text-[#ff3333] text-xs">🔥</span>}
-                        </div>
-                        <div className="text-xs text-[#555555]">{row.chain}</div>
-                      </Link>
-                    </td>
-                    <td className="py-3 px-4">
-                      <span className={`px-2 py-1 rounded-[3px] text-xs font-medium inline-block whitespace-nowrap ${getVerdictStyles(row.verdict)}`}>
-                        {row.verdict}
-                      </span>
-                    </td>
-                    <td className="py-3 px-4 text-right text-[#e8e8e8]">{row.mktCap}</td>
-                    <td className="py-3 px-4 text-right text-[#e8e8e8]">{row.liquidity}</td>
-                    <td className={`py-3 px-4 text-right font-medium ${row.change.startsWith('+') ? 'text-[#00cc66]' : 'text-[#ff3333]'}`}>
-                      {row.change}
-                    </td>
-                    <td className="py-3 px-4 text-right text-[#555555]">{row.age}</td>
-                  </tr>
-                ))}
+                {coinsData.coins.map((coin) => {
+                  const verdict = coin.verdict || 'PENDING_REVIEW'
+                  const verdictLabel = verdict
+                    .replace(/_/g, ' ')
+                    .split(' ')
+                    .map((w) => w.charAt(0) + w.slice(1).toLowerCase())
+                    .join(' ')
+
+                  return (
+                    <tr key={coin.id} className="border-b border-[#1f1f1f] hover:bg-[#111111] transition-colors cursor-pointer">
+                      <td className="py-3 px-4 text-[#e8e8e8] font-medium">
+                        <Link href={`/coins/${coin.pair_address}`} className="hover:text-[#ff3333] transition-colors">
+                          <div className="flex items-center gap-2">
+                            <span>${coin.base_token_symbol}</span>
+                            <span className={`text-xs px-2 py-0.5 rounded-[2px] ${getChainStyles(coin.chain === 'solana' ? 'SOL' : 'BASE')}`}>
+                              {coin.chain === 'solana' ? 'SOL' : 'BASE'}
+                            </span>
+                          </div>
+                          <div className="text-xs text-[#555555] mt-1">{coin.base_token_name}</div>
+                        </Link>
+                      </td>
+                      <td className="py-3 px-4">
+                        <span className={`px-2 py-1 rounded-[3px] text-xs font-medium inline-block whitespace-nowrap ${getVerdictStyles(verdictLabel)}`}>
+                          {verdictLabel}
+                        </span>
+                      </td>
+                      <td className="py-3 px-4 text-right text-[#e8e8e8]">{formatNumber(coin.market_cap || 0)}</td>
+                      <td className="py-3 px-4 text-right text-[#e8e8e8]">{formatNumber(coin.liquidity_usd)}</td>
+                      <td className={`py-3 px-4 text-right font-medium ${coin.price_change_24h >= 0 ? 'text-[#00cc66]' : 'text-[#ff3333]'}`}>
+                        {coin.price_change_24h >= 0 ? '+' : ''}{coin.price_change_24h.toFixed(1)}%
+                      </td>
+                      <td className="py-3 px-4 text-right text-[#555555]">{formatAge(coin.first_seen_at)}</td>
+                    </tr>
+                  )
+                })}
               </tbody>
             </table>
           </div>
@@ -203,9 +228,11 @@ export default function Home() {
       {/* Footer Bar */}
       <section className="w-full px-4 sm:px-6 lg:px-8 py-4 border-t border-[#1f1f1f] bg-[#111111]">
         <div className="max-w-6xl mx-auto flex items-center justify-between text-xs text-[#555555]">
-          <div>SHOWING 8 OF 247 LAUNCHES · LAST 24H</div>
+          <div>SHOWING {coinsData.coins.length} OF {coinsData.total} LAUNCHES · LAST 24H</div>
           <div className="flex gap-6">
-            <span>31 BUY · 84 TREAD · 112 STAY</span>
+            <span>
+              {statsData.verdict_counts.BUY_THE_BITCH} BUY · {statsData.verdict_counts.TREAD_CAREFULLY} TREAD · {statsData.verdict_counts.STAY_AWAY} STAY
+            </span>
           </div>
         </div>
       </section>

@@ -3,7 +3,6 @@ import { Metadata } from 'next'
 export const metadata: Metadata = {
   title: '5TARS Gaming - Web3 Gaming for Football & Soccer Fans',
   description: 'Web3 gaming platform for football and soccer enthusiasts. NFTs, rewards, and decentralized gaming.',
-  canonical: 'https://kifscrypto.com/5tars-gaming-web-3-gaming-for-football-soccer-fans',
 }
 
 export default function FiveStarsGamingPage() {

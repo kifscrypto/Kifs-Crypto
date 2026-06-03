@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
     console.log('[v0] Post created successfully:', { id: post.id, slug: post.slug })
     
     // Revalidate affected pages
-    revalidateTag('posts')
+    revalidateTag('posts', 'max')
     revalidatePath('/blog')
     revalidatePath('/admin/posts')
     revalidatePath('/')

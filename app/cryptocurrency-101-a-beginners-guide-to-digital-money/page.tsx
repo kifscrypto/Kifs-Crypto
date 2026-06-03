@@ -3,7 +3,6 @@ import { Metadata } from 'next'
 export const metadata: Metadata = {
   title: 'Cryptocurrency 101 — A Beginner\'s Guide to Digital Money',
   description: 'Complete beginner guide to cryptocurrency. Learn the fundamentals of digital money and blockchain.',
-  canonical: 'https://kifscrypto.com/cryptocurrency-101-a-beginners-guide-to-digital-money',
 }
 
 export default function Crypto101Page() {

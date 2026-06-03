@@ -3,7 +3,6 @@ import { Metadata } from 'next'
 export const metadata: Metadata = {
   title: 'Marketing Crypto Projects Correctly Using Social Media',
   description: 'Guide to marketing cryptocurrency projects on social media. Best practices and strategies.',
-  canonical: 'https://kifscrypto.com/marketing-crypto-projects-correctly-using-social-media',
 }
 
 export default function MarketingCryptoPage() {
